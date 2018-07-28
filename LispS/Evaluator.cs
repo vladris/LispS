@@ -42,14 +42,12 @@ namespace LispS
                 case "eq":
                     return MakeBool(EvalExpr(args.Head, ctx).Equals(EvalExpr(args.Tail, ctx)));
                 case "eval":
-                    return EvalExpr(args, ctx);
+                    return EvalExpr(EvalExpr(tail, ctx), ctx);
                 case "if":
                     if (EvalExpr(args.Head, ctx) != Atom.Nil)
                         return EvalExpr((args.Tail as List).Head, ctx);
                     else
                         return EvalExpr((args.Tail as List).Tail, ctx);
-                case "quote":
-                    return new Quote { Quoted = tail };
                 case "store":
                     return ctx.Store(EvalExpr(args.Head, ctx) as Name, EvalExpr(args.Tail, ctx));
                 default:

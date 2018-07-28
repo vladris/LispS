@@ -11,7 +11,10 @@ namespace LispS
     {
         static void Eval(string expr)
         {
+            Console.WriteLine(expr);
+            Console.Write("> ");
             Console.WriteLine(Printer.PrintExpr(Evaluator.EvalExpr(Parser.Parse(expr), Context.Make())));
+            Console.WriteLine();
         }
 
         static void Main(string[] args)
@@ -23,6 +26,11 @@ namespace LispS
             Eval("(atom ())");
             Eval("(atom (cons 1 2))");
             Eval("(atom (car (cons 1 2)))");
+            Eval("(eq 5 5)");
+            Eval("(eq 5 6)");
+            Eval("(if (eq 5 4) (cons 1 2) (cons 2 3))");
+            Eval("'(cons 1 2)");
+            Eval("(eval '(cons 1 2))");
 
             var expr2 = new List
             {
