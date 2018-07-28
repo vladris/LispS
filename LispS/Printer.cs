@@ -15,7 +15,7 @@ namespace LispS
 
         private static string Print(Atom<string> name) => name.Value;
 
-        private static string Print(Quote quote) => PrintExpr(quote);
+        private static string Print(Quote quote) => $"'{PrintExpr(quote.Quoted)}";
 
         private static string Print(List list) => $"({PrintExpr(list.Head)} . {PrintExpr(list.Tail)})";
     }
