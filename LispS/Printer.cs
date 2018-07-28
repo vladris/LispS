@@ -18,5 +18,7 @@ namespace LispS
         private static string Print(Quote quote) => $"'{PrintExpr(quote.Quoted)}";
 
         private static string Print(List list) => $"({PrintExpr(list.Head)} . {PrintExpr(list.Tail)})";
+
+        private static string Print(Lambda lambda) => $"({PrintExpr(lambda.Head)} => ({PrintExpr(lambda.Tail)})";
     }
 }

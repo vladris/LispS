@@ -5,8 +5,6 @@ using System.Linq;
 
 namespace LispS
 {
- 
-
     class Program
     {
         static void Eval(string expr)
@@ -19,6 +17,7 @@ namespace LispS
 
         static void Main(string[] args)
         {
+            /*
             Eval("(car (cons (cons 1 (cons 2 ())) 3))");
             Eval("(car (cons 1 2))");
             Eval("(cdr (cons 1 2))");
@@ -31,39 +30,28 @@ namespace LispS
             Eval("(if (eq 5 4) (cons 1 2) (cons 2 3))");
             Eval("'(cons 1 2)");
             Eval("(eval '(cons 1 2))");
+            Eval("((lambda (x y) (cons x y)) 1 2)");
+            Eval("((lambda (x y z) (cons (cons x z) y)) 1 2 3)");
+            Eval("(store pair (lambda (x y) (cons x y)))");
+            */
 
-            var expr2 = new List
+            var ctx = Context.Make();
+
+            while (true)
             {
-                Head = new Lambda
-                {
-                    Head = new Name { Value = "x" },
-                    Tail = new Lambda
-                    {
-                        Head = new Name { Value = "y" },
-                        Tail = new List
-                        {
-                            Head = new Name { Value = "cons" },
-                            Tail = new List
-                            {
-                                Head = new Name { Value = "x" },
-                                Tail = new Name { Value = "y" }
-                            }
-                        }
-                    }
-                },
-                Tail = new List
-                {
-                    Head = new Atom<int> { Value = 1 },
-                    Tail = new List
-                    {
-                        Head = new Atom<int> { Value = 2 },
-                        Tail = Atom.Nil
-                    }
-                }
-            };
+                Console.Write("> ");
+                var expr = Console.ReadLine();
+                if (expr == "exit") return;
 
-            Console.WriteLine(Printer.PrintExpr(Evaluator.EvalExpr(expr2, Context.Make())));
-            Console.ReadLine();
+                try
+                {
+                    Console.WriteLine(Printer.PrintExpr(Evaluator.EvalExpr(Parser.Parse(expr), ctx)));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Exception: {e.Message}");
+                }
+            }
         }
     }
 }

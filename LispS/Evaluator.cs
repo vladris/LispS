@@ -21,6 +21,9 @@ namespace LispS
         private static SExpression Eval(List list, Context ctx)
             => EvalList((dynamic)list.Head, list.Tail, ctx);
 
+        private static SExpression EvalList(List head, SExpression tail, Context ctx)
+            => EvalList((dynamic)Eval(head, ctx), tail, ctx);
+
         private static SExpression EvalList(Name name, SExpression tail, Context ctx)
         {
             var args = tail as List;
@@ -48,8 +51,14 @@ namespace LispS
                         return EvalExpr((args.Tail as List).Head, ctx);
                     else
                         return EvalExpr((args.Tail as List).Tail, ctx);
+                case "lambda":
+                    return new Lambda
+                    {
+                        Head = args.Head,
+                        Tail = args.Tail
+                    };
                 case "store":
-                    return ctx.Store(EvalExpr(args.Head, ctx) as Name, EvalExpr(args.Tail, ctx));
+                    return ctx.Store(args.Head as Name, EvalExpr(args.Tail, ctx));
                 default:
                     return EvalList((dynamic)ctx.Resolve(name), args, ctx);
             }
@@ -58,15 +67,16 @@ namespace LispS
         private static SExpression EvalList(Lambda lambda, SExpression tail, Context ctx)
         {
             var scope = ctx.Push();
-            SExpression l = lambda;
-            while (l is Lambda)
+            SExpression args = lambda.Head;
+            while (args is List)
             {
-                scope.Store((l as Lambda).Head as Name, EvalExpr((tail as List).Head, ctx));
-                l = (l as Lambda).Tail;
+                scope.Store((args as List).Head as Name, EvalExpr((tail as List).Head, ctx));
+                args = (args as List).Tail;
                 tail = (tail as List).Tail;
             }
+            scope.Store(args as Name, EvalExpr(tail, ctx));
 
-            return EvalExpr(l, scope);
+            return EvalExpr(lambda.Tail, scope);
         }
     }
 }
