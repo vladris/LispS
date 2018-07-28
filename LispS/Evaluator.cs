@@ -30,9 +30,9 @@ namespace LispS
                 case "atom":
                     return MakeBool(EvalExpr(tail, ctx) is Atom);
                 case "car":
-                    return EvalExpr(args.Head, ctx);
+                    return (EvalExpr(tail, ctx) as List).Head;
                 case "cdr":
-                    return EvalExpr(args.Tail, ctx);
+                    return (EvalExpr(tail, ctx) as List).Tail;
                 case "cons":
                     return new List
                     {

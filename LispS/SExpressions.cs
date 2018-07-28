@@ -12,7 +12,7 @@ namespace LispS
     // Atom base, provides "True" and "Nil" atoms
     class Atom : SExpression
     {
-        public static SExpression True = new Atom<string> { Value = "true" };
+        public static SExpression True = new Atom();
         public static SExpression Nil = new Atom();
 
         protected Atom() { }

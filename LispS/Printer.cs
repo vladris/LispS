@@ -7,9 +7,9 @@ namespace LispS
     {
         public static string PrintExpr(SExpression expr) => Print((dynamic)expr);
 
-        private static string Print(Atom atom) => atom == Atom.True ? "T" :
+        private static string Print(Atom atom) => atom == Atom.True ? ":true" :
                                                   atom == Atom.Nil ? "()" :
-                                                  throw new InvalidOperationException();
+                                                  throw new ArgumentException();
 
         private static string Print(Atom<int> number) => number.Value.ToString();
 
