@@ -19,6 +19,6 @@ namespace LispS
 
         private static string Print(List list) => $"({PrintExpr(list.Head)} . {PrintExpr(list.Tail)})";
 
-        private static string Print(Lambda lambda) => $"({PrintExpr(lambda.Head)} => ({PrintExpr(lambda.Tail)})";
+        private static string Print(Lambda lambda) => $"({PrintExpr(lambda.Head)}) => ({PrintExpr(lambda.Tail)})";
     }
 }

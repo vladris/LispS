@@ -34,6 +34,8 @@ namespace LispS
         {
             SkipWhitespace();
 
+            if (End()) return Atom.Nil;
+
             var next = Peek();
 
             if (Char.IsDigit(next)) return ReadNumber();

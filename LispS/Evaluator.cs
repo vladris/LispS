@@ -14,7 +14,9 @@ namespace LispS
 
         private static SExpression Eval(Atom atom, Context ctx) => atom;
 
-        private static SExpression Eval(Name atom, Context ctx) => ctx.Resolve(atom);
+        private static SExpression Eval(Name atom, Context ctx) => EvalExpr(ctx.Resolve(atom), ctx);
+
+        private static SExpression TryEval(Name atom, Context ctx) => ctx.Resolve(atom) ?? atom;
 
         private static SExpression Eval(Quote quote, Context ctx) => quote.Quoted;
 
@@ -58,9 +60,13 @@ namespace LispS
                         Tail = args.Tail
                     };
                 case "store":
-                    return ctx.Store(args.Head as Name, EvalExpr(args.Tail, ctx));
+                    return ctx.Root().Store(TryEval(args.Head as Name, ctx) as Name, EvalExpr(args.Tail, ctx));
                 default:
-                    return EvalList((dynamic)ctx.Resolve(name), args, ctx);
+                    return Eval(new List
+                    {
+                        Head = ctx.Resolve(name),
+                        Tail = tail
+                    }, ctx);
             }
         }
 
@@ -70,13 +76,16 @@ namespace LispS
             SExpression args = lambda.Head;
             while (args is List)
             {
-                scope.Store((args as List).Head as Name, EvalExpr((tail as List).Head, ctx));
+                scope.Store((args as List).Head as Name, EvalNonAtom((tail as List).Head, ctx));
                 args = (args as List).Tail;
                 tail = (tail as List).Tail;
             }
-            scope.Store(args as Name, EvalExpr(tail, ctx));
+            scope.Store(args as Name, EvalNonAtom(tail, ctx));
 
             return EvalExpr(lambda.Tail, scope);
         }
+
+        private static SExpression EvalNonAtom(SExpression expr, Context ctx)
+            => expr is Atom ? expr : EvalExpr(expr, ctx);
     }
 }
