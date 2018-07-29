@@ -11,6 +11,7 @@ Run application for REPL.
 
 ### S-expressions
 * Atom (Number | String | Name)
+  * There are two predefined atoms: ``:true``, representing a true value; ``()``, representing a false value/empty list.
 * List (S-expression S-expression)
   * Lambda (``(arguments)`` and ``(functions)`` plus captured context)
 
@@ -20,7 +21,7 @@ Run application for REPL.
   
 * ``atom``. Example: ``(atom ()) => :true``, ``(atom (cons 1 2)) => ()``.
 * ``car``, ``cdr``, ``cons``. Example ``(car (cons 1 (cons 2 3))) => 1``, ``(cdr (cons 1 (cons 2 3)) => (2 . 3)``.
-* ``eq``. Example: ``(eq 1 1) => true``, ``(eq 1 2) => ()``.
+* ``eq``. Example: ``(eq 1 1) => :true``, ``(eq 1 2) => ()``.
 * Quote as ``'``. Example: ``'(+ 1 2) => (+ . (1 . 2))``.
 * ``eval``. Example: ``(eval '(+ 1 2)) => 3``.
 * ``if``. Example: ``(if (eq 1 2) "that's odd" "nope") => nope``.
@@ -30,7 +31,7 @@ Run application for REPL.
 Instead of providing a primitive for defining function, functions can be defined by storing lambdas, which names them:
 
 ```
-> (store (lambda add1 x (+ x 1)))
+> (store add1 (lambda x (+ x 1)))
 add1
 > (add1 1)
 2
