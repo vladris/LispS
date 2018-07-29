@@ -22,7 +22,15 @@ namespace LispS
 
         private static SExpression Eval(Atom atom, Context ctx) => atom;
 
-        private static SExpression Eval(Name atom, Context ctx) => EvalNonAtom(ctx.Resolve(atom), ctx);
+        private static SExpression Eval(Name atom, Context ctx)
+        {
+            var resolved = ctx.Resolve(atom);
+
+            if (resolved.Equals(atom)) return resolved;
+            if (resolved is Name) return Eval(resolved as Name, ctx);
+
+            return resolved;
+        }
 
         private static SExpression Eval(Quote quote, Context ctx) => quote.Quoted;
 
@@ -100,8 +108,5 @@ namespace LispS
 
             return EvalExpr(lambda.Tail, scope);
         }
-
-        private static SExpression EvalNonAtom(SExpression expr, Context ctx)
-            => expr is Atom ? expr : EvalExpr(expr, ctx);
     }
 }
