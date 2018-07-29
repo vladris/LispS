@@ -7,6 +7,14 @@ namespace LispS
     // Evaluates an SExpressions with a given context
     class Evaluator
     {
+        private static readonly Dictionary<string, Func<int, int, int>> Arithmetic = new Dictionary<string, Func<int, int, int>>
+        {
+            { "+", (x, y) => x + y },
+            { "-", (x, y) => x - y },
+            { "*", (x, y) => x * y },
+            { "/", (x, y) => x / y },
+        };
+
         public static SExpression EvalExpr(SExpression expr, Context ctx)
             => Eval((dynamic)expr, ctx);
 
@@ -30,6 +38,14 @@ namespace LispS
 
             switch (name.Value)
             {
+                case "+":
+                case "-":
+                case "*":
+                case "/":
+                    var op1 = (EvalExpr(args.Head, ctx) as Atom<int>).Value;
+                    var op2 = (EvalExpr(args.Tail, ctx) as Atom<int>).Value;
+
+                    return new Atom<int> { Value = Arithmetic[name.Value](op1, op2) };
                 case "atom":
                     return MakeBool(EvalExpr(tail, ctx) is Atom);
                 case "car":
@@ -55,10 +71,12 @@ namespace LispS
                     return new Lambda
                     {
                         Head = args.Head,
-                        Tail = args.Tail
+                        Tail = args.Tail,
+                        Context = ctx
                     };
                 case "store":
-                    return ctx.Root().Store(args.Head as Name, EvalExpr(args.Tail, ctx));
+                    var stored = ctx.TryResolve(args.Head as Name);
+                    return ctx.Root().Store(stored as Name ?? args.Head as Name, EvalExpr(args.Tail, ctx));
                 default:
                     return Eval(new List
                     {
@@ -70,7 +88,7 @@ namespace LispS
 
         private static SExpression EvalList(Lambda lambda, SExpression tail, Context ctx)
         {
-            var scope = ctx.Push();
+            var scope = lambda.Context.Push();
             SExpression args = lambda.Head;
             while (args is List)
             {

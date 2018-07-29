@@ -43,7 +43,9 @@ namespace LispS
         public SExpression Tail { get; set; }
     }
 
-    // Lambda is a special list (meaningful for the runtime)
+    // Lambda is a closure
     class Lambda : List
-    { }
+    {
+        public Context Context { get; set; }
+    }
 }

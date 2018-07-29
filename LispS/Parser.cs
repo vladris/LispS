@@ -43,6 +43,10 @@ namespace LispS
             if (next == '"') return ReadString();
             if (next == '\'') return ReadQuote();
             if (next == '(') return ReadList();
+            if (next == '+' ||
+                next == '-' ||
+                next == '*' ||
+                next == '/') return new Name { Value = Read().ToString() };
 
             throw new ArgumentException();
         }
