@@ -46,3 +46,32 @@ add1
 | Evaluator.cs    | S-expression evaluation logic. |
 | Printer.cs      | Prints any s-expression. |
 | Program.cs      | Implements REPL. |
+
+### Other examples
+
+Reverse list:
+```
+(store reverse (lambda l (if (atom l) l (cons (reverse (cdr l)) (car l)))))
+(reverse (cons 1 (cons 2 (cons 3 (cons 4 ()))))
+((((() . 4) . 3) . 2) . 1)
+```
+
+Map:
+```
+> (store add1 (lambda x (+ x 1)))
+add1
+> (store map (lambda (f l) (if (eq l ()) () (cons (f (car l)) (map f (cdr l))))))
+map
+> (map add1 (cons 1 (cons 2 (cons 3 (cons 4 ())))))
+(2 . (3 . (4 . (5 . ()))))
+```
+
+Fold:
+```
+> (store fold (lambda (f z l) (if (eq l ()) z (f (car l) (fold f z (cdr l))))))
+fold
+> (store add (lambda (x y) (+ x y)))
+add
+> (fold add 0 (cons 1 (cons 2 (cons 3 (cons 4 ())))))
+10
+```
