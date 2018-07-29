@@ -75,10 +75,11 @@ namespace LispS
         private SExpression ReadString()
         {
             string token = String.Empty;
-            char c;
 
-            while ((c = Read()) != '"')
-                token += c;
+            Expect('"');
+            while (Peek() != '"')
+                token += Read();
+            Expect('"');
 
             return new Atom<string> { Value = token };
         }
