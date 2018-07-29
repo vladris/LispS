@@ -23,8 +23,13 @@ namespace LispS
         }
 
         public SExpression Resolve(Name name)
-            => Symbols.ContainsKey(name.Value) ? Symbols[name.Value] : Parent?.Resolve(name) 
-            ?? throw new ArgumentException($"Unknown <{name.Value}>");
+            => Get(name) ?? throw new ArgumentException($"Unknown <{name.Value}>");
+
+        public SExpression TryResolve(Name name)
+            => Get(name) ?? name;
+
+        private SExpression Get(Name name)
+            => Symbols.ContainsKey(name.Value) ? Symbols[name.Value] : Parent?.Resolve(name);
 
         public Context Root()
             => Parent == null ? this : Parent.Root();
